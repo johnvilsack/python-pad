@@ -1,0 +1,101 @@
+# BTW, I use Arch
+setfont ter-132n
+Wifi (wlan0):
+  - iwctl
+  -   station wlan0 connect <ssid>
+  -   exit
+  - ping google.com
+  - pacman -Syy
+  - pacman -S reflector
+
+Disk (nvme0n1):
+  Partitioning:
+    - fdisk /dev/nvme0n1 : 
+      [
+        [p] : print
+        [d] : delete
+        [g] : generate new GUID
+        [n] : new partition
+        [t] : change partition type
+          1 : UEFI
+          19 : Linux Swap
+          23 : Linux root x86_64
+          41 : Linux home
+        [w] : write
+      ]
+      UEFI:
+      - n; 1; ^M; +512M; t; 1;
+      SWAP:
+      - n; 2; ^M; +16G; t; 2; 19;
+      ROOT:
+      - n; 3; ^M; -128G; t; 3; 23;
+      HOME:
+      - n; 4; ^M; ^M; t; 4; 41;
+      - w;
+  Format:
+    - mkfs.fat -F 32 /dev/nvme0n1p1
+    - mkswap /dev/nvme0n1p2
+    - mkfs.ext4 /dev/nvme0n1p3
+    - mkfs.ext4 /dev/nvme0n1p4
+  Mount:
+    - mount /dev/nvme0n1p3 /mnt
+    - mount --mkdir /dev/nvme0n1p4 /mnt/home
+    - mount --mkdir /dev/nvme0n1p1 /mnt/boot
+    - swapon /dev/nvme0n1p2
+  Generate:
+    - e2label /dev/nvme0n1p3 "arch"
+    - e2label /dev/nvme0n1p4 "home"
+    
+Install:
+  - pacstrap /mnt base linux linux-firmware intel-ucode nano terminus-font
+  - genfstab -U /mnt >> /mnt/etc/fstab
+
+CHROOT:
+  - arch-chroot /mnt
+  
+    LOCALE:
+      - timedatectl set-timezone America/Chicago
+      - echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen
+      - locale-gen
+      - echo LANG=en_US.UTF-8 > /etc/locale.conf
+      - echo LANG=en_US.UTF-8
+    NETWORK:
+      - echo archxps > /etc/hostname
+      - touch /etc/hosts
+      - { 
+          echo '127.0.0.1 localhost'; 
+          echo '::1 localhost'; 
+          echo '127.0.1.1 archxps';
+        } >> /etc/hosts
+    BOOTUP:
+      - passwd
+      - mkinitcpio -P
+      - bootctl install
+      - /boot/loader/loader.conf:
+        {
+          default arch.conf
+          timeout 4
+          console-mode max
+          editor no
+        }
+      - /boot/loader/entries/arch.conf:
+        {
+          title Arch Linux
+          linux /vmlinuz-linux
+          initrd /intel-ucode.img
+          initrd /initramfs-linux.img
+          options root="LABEL=arch" rw
+        }
+    FINAL:
+      # Leave chroot
+      - exit
+      - umount -R /mnt
+      - reboot
+
+install networkmanager
+systemctl enable NetworkManager.service
+nmcli device wifi connect VNet password <password>
+
+
+
+
