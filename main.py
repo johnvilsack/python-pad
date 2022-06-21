@@ -35,7 +35,6 @@ def loadSettings(defaultConfigFile, currentConfigFile, config):
   return config
 #!
 
-
 # def menuBuildGrid():
 #   tui.clear()
 #   tui.displayMenu(config.listDataFiles())

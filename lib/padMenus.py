@@ -5,7 +5,7 @@ class Menu:
 ## MAIN
   def optionsMain(self):
     options = {
-      1: 'Choose Word List',
+      1: 'Add Your Custom Wordlist',
       2: 'Build Values',
       3: 'Build Phrases',
       4: 'View Settings'
@@ -24,13 +24,7 @@ class Menu:
           self.actionsWordList(config, tui, option)
           return
         case 2:
-          print('TWO')
-          return
-        case 3:
           print('THREE')
-          return
-        case 4:
-          print('FOUR')
           return
     else:
       print('Unknown Value')
