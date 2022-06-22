@@ -7,5 +7,7 @@
     "**/.DS_Store": true,
     "**/Thumbs.db": true
   },
-  "hide-files.files": []
+  "hide-files.files": [],
+  "python.terminal.activateEnvironment": false,
+  "python.defaultInterpreterPath": "~/anaconda3/envs/py10/python.exe"
 }

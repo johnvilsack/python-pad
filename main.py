@@ -13,9 +13,9 @@ default = {
 }
 
 def main():
-  config.initConfig(default)
+  msg = config.initConfig(default)
   while(True):
-    menu.menuMain()
+    menu.menuMain(msg)
     exit()
 
 if __name__ == "__main__":

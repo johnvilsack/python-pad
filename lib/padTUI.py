@@ -5,32 +5,38 @@ class TUI:
   def __init__(self, config):
     self.config = config
     
-  # Simple clear for TUI
   def clear(self):
     os.system('cls||clear')
   
-  def displayMenu(self, options):
+  def displayMenu(self, options, msg=None):
+    self.clear()
+    self.line()
     for key in options.keys():
-      print('\t', key, options[key])
-  
-  def displayAnyKey(self):
-    input('\nPress Any Key to Continue...')
-    TUI.clear(self)
+      self.opt(key, options[key])
+    self.line()
+    if msg is not None:
+      print('\n', msg, '\n')
 
-  def prompt(self, options):
-    self.displayMenu(options)
-    option = input('\nChoose #, [q] to quit: ')
+  def opt(self, key, value):
+    print('\t[{0}] {1}'.format(key, value))
+    return
+  
+  def line(self):
+    print('=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=')
+    return
+  def prompt(self, options, msg=None):
+
+    self.displayMenu(options, msg)
+
+    option = input('\n[S]ave [Q]uit Enter Option >>> ')
+
     if not option.isdigit():
+      option = option.lower()
       if (option == 'q'):
         self.exitPassPad()
       elif (option == 's'):
-        ## How to pass save data???
-        self.config.saveMenu()
-        self.prompt(options)
-      else:
-        print('Illegal Value')
-        self.displayAnyKey()
-        self.prompt(options)
+        msg = self.config.saveMenu()
+        self.prompt(options, msg)
     else:
       return option
       

@@ -5,21 +5,52 @@ class Menu:
     self.config = config.config
     self.tui = tui
 
-## MAIN
-  optionsMain = {
-    1: 'Select Wordlist',
-    2: 'Build Values',
-    3: 'Build Phrases',
-    4: 'View Settings'
-  }
-
-  def menuMain(self):
-    option = self.tui.prompt(self.optionsMain)
-    self.actionsMain(option)
+  ## MAIN
+  def menuMain(self, msg=None):
+    options = {
+      1: 'Make A Passpad'
+    }
+    self.actionsMain(self.tui.prompt(options, msg))
 
   def actionsMain(self, option):
-    print('Returned', option)
-    exit()
+    match option:
+      case '1':
+        self.menuNewPasspad()
+        return
+      case _:
+        msg = 'Unknown Value. Try again.'
+        self.menuMain(msg)
+
+  def menuNewPasspad(self, msg=None):
+    options = {
+      1: 'Use current settings',
+      2: 'Use new settings wizard'
+    }
+    self.actionsNewPasspad(self.tui.prompt(options, msg))
+
+  def actionsNewPasspad(self, option):
+    match option:
+      case '1':
+        print('foo')
+        return
+      case _:
+        msg = 'Unknown Value. Try again.'
+        self.menuNewPasspad(msg)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   # def actionsMain(self):
   #   option = int(option)
