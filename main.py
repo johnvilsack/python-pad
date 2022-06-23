@@ -1,18 +1,18 @@
 from lib import padConfig, padTUI, padMenus
 
-config = padConfig.Config()
-tui = padTUI.TUI(config)
-menu = padMenus.Menu(config, tui)
-
-default = {
-  'config': 'settings.ini',
-  'listsdir': './data',
-  'wordfile': 'wordle-answers.json',
-  'gridcols': '10',
-  'gridrows': '10' 
-}
-
 def main():
+  config = padConfig.Config()
+  tui = padTUI.TUI(config)
+  menu = padMenus.Menu(config, tui)
+
+  default = {
+    'config': 'settings.ini',
+    'listsdir': './data',
+    'wordfile': 'wordle-answers.json',
+    'gridcols': '10',
+    'gridrows': '10' 
+  }
+
   msg = config.initConfig(default)
   while(True):
     menu.menuMain(msg)
