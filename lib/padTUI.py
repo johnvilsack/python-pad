@@ -1,10 +1,9 @@
-import os
-from lib import padConfig
+import os, configparser
 
 class TUI:
-  def __init__(self, config):
-    self.config = config
-    
+  def __init__(self):
+    print('TUI loaded')
+     
   def clear(self):
     os.system('cls||clear')
   
@@ -24,7 +23,7 @@ class TUI:
   def line(self):
     print('=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=')
     return
-  def prompt(self, options, msg=None):
+  def prompt(self, options, config, msg=None):
 
     self.displayMenu(options, msg)
 
@@ -35,8 +34,9 @@ class TUI:
       if (option == 'q'):
         self.exitPassPad()
       elif (option == 's'):
-        msg = self.config.saveMenu()
-        self.prompt(options, msg)
+        msg = config.display_save_menu()
+        print(msg)
+        self.prompt(options, config, msg)
     else:
       return option
       

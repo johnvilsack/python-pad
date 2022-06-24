@@ -2,21 +2,12 @@ from lib import padConfig, padTUI, padMenus
 
 def main():
   config = padConfig.Config()
-  tui = padTUI.TUI(config)
+  tui = padTUI.TUI()
   menu = padMenus.Menu(config, tui)
+  msg = config.init_config()
 
-  default = {
-    'config': 'settings.ini',
-    'listsdir': './data',
-    'wordfile': 'wordle-answers.json',
-    'gridcols': '10',
-    'gridrows': '10' 
-  }
-
-  msg = config.initConfig(default)
   while(True):
     menu.menuMain(msg)
-    exit()
 
 if __name__ == "__main__":
   try:

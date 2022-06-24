@@ -115,14 +115,7 @@ class WordList:
 
 def main():
   config = padConfig.Config()
-  default = {
-    'config': 'settings.ini',
-    'listsdir': './data/',
-    'wordfile': 'wordle-answers.json',
-    'gridcols': '10',
-    'gridrows': '10' 
-  }
-  config.initConfig(default)
+  config.init_config()
   wordlist = WordList(config)
   actuallist = wordlist.openWordlist()
   COLUMNS = wordlist.makeAlphaColumns()

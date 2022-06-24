@@ -1,8 +1,9 @@
+import makePasspad
 from lib import padConfig, padTUI
 
 class Menu:
   def __init__(self, config, tui):
-    self.config = config.config
+    self.config = config
     self.tui = tui
 
   ## MAIN
@@ -10,7 +11,7 @@ class Menu:
     options = {
       1: 'Make A Passpad'
     }
-    self.actionsMain(self.tui.prompt(options, msg))
+    self.actionsMain(self.tui.prompt(options, self.config, msg))
 
   def actionsMain(self, option):
     match option:
@@ -26,12 +27,17 @@ class Menu:
       1: 'Use current settings',
       2: 'Use new settings wizard'
     }
-    self.actionsNewPasspad(self.tui.prompt(options, msg))
+    self.actionsNewPasspad(self.tui.prompt(options, self.config, msg))
 
   def actionsNewPasspad(self, option):
     match option:
       case '1':
-        print('foo')
+        wordlist = makePasspad.WordList(self.config)
+        actuallist = wordlist.openWordlist()
+        COLUMNS = wordlist.makeAlphaColumns()
+        RANDO = wordlist.randomizeWordList()
+        GRID = wordlist.populateGrid()
+        wordlist.makeHTML()
         return
       case _:
         msg = 'Unknown Value. Try again.'

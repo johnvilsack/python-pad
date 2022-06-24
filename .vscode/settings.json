@@ -5,7 +5,12 @@
     "**/.hg": true,
     "**/CVS": true,
     "**/.DS_Store": true,
-    "**/Thumbs.db": true
+    "**/Thumbs.db": true,
+    ".vscode": true,
+    "__pycache__": true,
+    ".gitignore": true,
+    "notebook.ipynb": true,
+    "old": true
   },
   "hide-files.files": [],
   "python.terminal.activateEnvironment": false,
