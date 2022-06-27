@@ -12,7 +12,8 @@ class Config:
       'wordfile': 'wordle-answers.json',
       'gridcols': '10',
       'gridrows': '10',
-      'gridseed': str(uuid.uuid1().hex)
+      'gridseed': str(uuid.uuid1().hex),
+      'gridjson': 'grid.json'
     }
   
   # Choose which config to load on initialization.

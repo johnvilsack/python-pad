@@ -2,3 +2,4 @@
 otp.json
 test.json
 /lib/__pycache__
+*.pyc

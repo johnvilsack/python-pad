@@ -7,10 +7,8 @@
 	"settings": {
 		"hide-files.files": [
 			".vscode",
-			"__pycache__",
 			".gitignore",
-			"notebook.ipynb",
-			"old"
+			"notebook.ipynb"
 		]
 	}
 }

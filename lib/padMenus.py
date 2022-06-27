@@ -25,7 +25,7 @@ class Menu:
   def menuNewPasspad(self, msg=None):
     options = {
       1: 'Use current settings',
-      2: 'Use new settings wizard'
+      2: 'Make Passcode'
     }
     self.actionsNewPasspad(self.tui.prompt(options, self.config, msg))
 
@@ -33,11 +33,11 @@ class Menu:
     match option:
       case '1':
         wordlist = makePasspad.WordList(self.config)
-        actuallist = wordlist.openWordlist()
-        COLUMNS = wordlist.makeAlphaColumns()
-        RANDO = wordlist.randomizeWordList()
-        GRID = wordlist.populateGrid()
-        wordlist.makeHTML()
+        wordlist.generate_wordlist()
+        wordlist.makeFinal()
+        return
+      case '2':
+        wordlist.randomPass()
         return
       case _:
         msg = 'Unknown Value. Try again.'

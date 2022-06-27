@@ -5,7 +5,8 @@ class TUI:
     print('TUI loaded')
      
   def clear(self):
-    os.system('cls||clear')
+    print('Clear Attempt')
+    #os.system('cls||clear')
   
   def displayMenu(self, options, msg=None):
     self.clear()

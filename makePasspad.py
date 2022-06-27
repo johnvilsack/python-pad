@@ -1,17 +1,33 @@
 import string, itertools, random, json
-from lib import padConfig, padTUI, padMenus
+from lib import padConfig
 
 class WordList:
   def __init__(self, config):
     self.config = config.config
-    self.WORDLIST = {}
+    self.IMPORTED_WORDLIST = {}
     self.COLUMNS = {}
+    self.RANDOMIZED_WORDLIST = {}
+    self.GRID = {}
+    self.TESTGRID = {}
   
+  def generate_wordlist(self):
+    # First, open the wordlist specified in config
+    self.openWordlist()
+    # Randomize this list based on gridseed
+    self.randomizeWordList()
+    # Make columns
+    self.makeAlphaColumns()
+    # Create actual Grid
+    self.populateGrid()
+    return
+
+  # Open wordlist dictated in settings
   def openWordlist(self):
     with open(self.config['SETTINGS']['listsdir'] + self.config['SETTINGS']['wordfile'], 'r') as f:
-      self.WORDLIST = json.load(f)
-    return self.WORDLIST
+      self.IMPORTED_WORDLIST = json.load(f)
+    return
 
+  # Convert gridcols integer in settings to alphabetic column (like in Excel)
   def makeAlphaColumns(self):
     GRIDCOLS = int(self.config['SETTINGS']['gridcols'])
     if (GRIDCOLS <= len(string.ascii_uppercase)):
@@ -28,23 +44,27 @@ class WordList:
       columns.append(result[i])
       i += 1
     self.COLUMNS = columns
-    return columns
+    return
 
+  # Use the gridseed in settings to randomize the order of the wordlist.
+  # Using a gridseed means that randomization is deterministic (i.e. can be replicated)
   def randomizeWordList(self):
     GRIDSEED = self.config['SETTINGS']['gridseed']
-    WORDLIST = self.WORDLIST
+    WORDLIST = self.IMPORTED_WORDLIST
     random.seed(GRIDSEED)
     random.seed(random.getrandbits(128))
     random.shuffle(WORDLIST)
-    return WORDLIST
+    self.RANDOMIZED_WORDLIST = WORDLIST
+    return
 
+  # Apply the order of the wordlist to the columns we created
+  # Order is left to right, top to bottom (e.g. A1, B1, C1, A2, B2, C2, etc.)
   def populateGrid(self):
-    CELLS = int(self.config['SETTINGS']['gridcols']) * int(self.config['SETTINGS']['gridcols'])
-    WORDLIST = self.WORDLIST
+    CELLS = int(self.config['SETTINGS']['gridcols']) * int(self.config['SETTINGS']['gridrows'])
+    WORDLIST = self.IMPORTED_WORDLIST
     COLUMNS = self.COLUMNS
     GRIDCOLS = int(self.config['SETTINGS']['gridcols'])
 
-    SHEET = {}
     currentWord = 0
     currentColumn = 1
     currentRow = 1
@@ -54,10 +74,7 @@ class WordList:
       if currentRow <= int(self.config['SETTINGS']['gridrows']):
         if (currentWord + 1) in range(0,len(WORDLIST)):
             currentCell = COLUMNS[currentColumn - 1] + str(currentRow).zfill(2)
-            GRID[currentWord] = {
-              'cell' : currentCell,
-              'word' : WORDLIST[currentWord]
-            }
+            GRID[currentCell] = WORDLIST[currentWord]
             if currentColumn // GRIDCOLS == 0:
               currentColumn += 1
             else:
@@ -67,61 +84,19 @@ class WordList:
         else:
           break
     self.GRID = GRID
-    return GRID
+    return
 
-  def makeHTML(self):
-    GRID = self.GRID
-    GRIDCOLS = int(self.config['SETTINGS']['gridcols'])
-
-    printCell = 0
-    printRow = 0
-    printCol = 1
-
-    f = open('table.html', 'w')
-    f.write('<html>\n<head>\n')
-    f.write('\t<style>\n')
-    f.write('\t\thtml { font-family: monospace; }\n\t\ttable td { font-size: 9pt; border: 1px solid black; padding: 5px; }\n')
-    f.write('\t</style>\n')
-    f.write('</head>\n<body>\n')
-    f.write('<table>\n\t<tr>\n')
-
-    for cell in GRID:
-      cellValue = format(GRID[printCell]['cell'] + ' :: ' + GRID[printCell]['word'])
-      cellHTML = '\t\t<td>' + cellValue + '</td>\n'
-      f.write(cellHTML)
-
-      if printCol // GRIDCOLS == 0:
-        printCol += 1
-      else:
-        f.write('\t</tr>\n\t<tr>\n')
-        printCol = 1
-        printRow += 1
-      printCell += 1
-    f.write('\t</tr>\n</table>\n</body>\n</html>')
-    f.close()
-    print('Grid Written to HTML')
-
-  #def makeFinal(self):
-    # f = open('wordlist.json', 'w')
-    # f.write(json.dumps(self.WORDLIST))
-    # # for value in WORDLIST:
-    # #   f.write(value)
-    # f.close()
-
-    # f = open('grid.txt', 'w')
-    # for value in self.GRID:
-    #   f.write(value)
-    # f.close()
+  def makeFinal(self):
+    with open(self.config['SETTINGS']['gridjson'], 'w') as f:
+      json.dump(self.GRID, f)
+    print('done!')
 
 def main():
   config = padConfig.Config()
   config.init_config()
   wordlist = WordList(config)
-  actuallist = wordlist.openWordlist()
-  COLUMNS = wordlist.makeAlphaColumns()
-  RANDO = wordlist.randomizeWordList()
-  GRID = wordlist.populateGrid()
-  wordlist.makeHTML()
+  wordlist.generate_wordlist()
+  wordlist.makeFinal()
 
 if __name__ == "__main__":
   try:
