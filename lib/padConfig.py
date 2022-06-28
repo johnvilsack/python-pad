@@ -1,4 +1,4 @@
-import os, sys, uuid, configparser, shutil, time
+import os, sys, uuid, configparser, shutil, time, string
 
 class Config:
   def __init__(self):
@@ -13,7 +13,8 @@ class Config:
       'gridcols': '10',
       'gridrows': '10',
       'gridseed': str(uuid.uuid1().hex),
-      'gridjson': 'grid.json'
+      'gridjson': 'grid.json',
+      'colnames': string.ascii_uppercase
     }
   
   # Choose which config to load on initialization.

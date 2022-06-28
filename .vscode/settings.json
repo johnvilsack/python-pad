@@ -8,7 +8,8 @@
     "**/Thumbs.db": true,
     ".vscode": true,
     ".gitignore": true,
-    "notebook.ipynb": true
+    "notebook.ipynb": true,
+    "__pycache__": true
   },
   "hide-files.files": [],
   "python.terminal.activateEnvironment": false,
