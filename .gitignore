@@ -3,3 +3,5 @@ otp.json
 test.json
 /lib/__pycache__
 *.pyc
+data/grant.json
+csv-data-sources/grant.csv
