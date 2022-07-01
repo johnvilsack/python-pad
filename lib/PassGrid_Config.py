@@ -1,13 +1,16 @@
+from datetime import datetime
 import os, sys, uuid, configparser, shutil, time, string
 
-class Config:
+class PassGrid_Config:
   def __init__(self):
     self.config = configparser.ConfigParser()
 
     # Create a generic seed from UUID to establish deterministic randomization
     self.default_section = 'SETTINGS'
+    self.default_savesdir = './saves/' + datetime.now().strftime('%m-%d-%y_%H%M') + '/'
     self.default_options = {
-      'savefile': 'settings.ini',
+      'conffile': 'settings.ini',
+      'savesdir': self.default_savesdir,
       'listsdir': './data/',
       'wordfile': 'wordle-answers.json',
       'gridcols': '10',
@@ -33,11 +36,11 @@ class Config:
     # Autoloader
     else:
       # Check for default file
-      if os.path.exists(self.default_options['savefile']):
-        iconfig = self.default_options['savefile']
+      if os.path.exists(self.default_options['conffile']):
+        iconfig = self.default_options['conffile']
         msg = '[FOUND] {0}'.format(iconfig)
       else:
-        iconfig = self.default_options['savefile']
+        iconfig = self.default_options['conffile']
         msg = '[NEW] Creating new {0}'.format(iconfig)
         msg += '\n' + self.set_default_config_settings()
       
@@ -46,7 +49,7 @@ class Config:
     msg = self.load_config_file(iconfig)
 
     print(msg)
-    return
+    return msg
 
   # Sets defaults using configparser. This also behaves as a filesystem sanity check on first run.
   def set_default_config_settings(self):
@@ -55,7 +58,7 @@ class Config:
     for k in self.default_options:
       self.config.set(self.default_section, k, self.default_options[k])
 
-    self.save_config_file(self.config.get(self.default_section, 'savefile'))
+    self.save_config_file(self.config.get(self.default_section, 'conffile'))
 
     msg = '[OK] New config file created'
     return msg
@@ -74,7 +77,7 @@ class Config:
   # Use configparse to save config
   def save_config_file(self, file):
     # Set that the entered name is now the file we'll be using
-    self.config.set(self.default_section, 'savefile', file)
+    self.config.set(self.default_section, 'conffile', file)
 
     # Automatically make a backup if there is already an existing file 
     if os.path.exists(file):
@@ -86,12 +89,18 @@ class Config:
     return msg
 
   def display_save_menu(self):
-    fileName = input('Enter file name or save as [%s]: ' % self.config['SETTINGS']['savefile'])
+    fileName = input('Enter file name or save as [%s]: ' % self.config['SETTINGS']['conffile'])
     if (fileName == ''):
-      fileName = self.config['SETTINGS']['savefile']
+      fileName = self.config['SETTINGS']['conffile']
     file, ext = os.path.splitext(fileName)
     if not ext:
       ext = '.ini'
     fileName = file + ext
     msg = self.save_config_file(fileName)
     return msg
+  
+if __name__ == "__main__":
+  try:
+    exit()
+  except SystemExit:
+    exit()

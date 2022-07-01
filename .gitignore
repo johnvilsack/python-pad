@@ -5,3 +5,5 @@ test.json
 *.pyc
 data/grant.json
 csv-data-sources/grant.csv
+/old
+/oldfiles

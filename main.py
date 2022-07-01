@@ -1,13 +1,13 @@
-from lib import padConfig, padTUI, padMenus
+from lib import PassGrid_Config, PassGrid_TUI, PassGrid_Menus
 
 def main():
-  config = padConfig.Config()
-  tui = padTUI.TUI()
-  menu = padMenus.Menu(config, tui)
+  config = PassGrid_Config.PassGrid_Config()
+  tui = PassGrid_TUI.PassGrid_TUI()
+  menu = PassGrid_Menus.PassGrid_Menus(config, tui)
   msg = config.init_config()
 
   while(True):
-    menu.menuMain(msg)
+    menu.menu_main(msg)
 
 if __name__ == "__main__":
   try:
@@ -17,3 +17,4 @@ if __name__ == "__main__":
       exit()
     except SystemExit:
       exit()
+

@@ -9,7 +9,9 @@
     ".vscode": true,
     ".gitignore": true,
     "notebook.ipynb": true,
-    "__pycache__": true
+    "__pycache__": true,
+    "design.md": true,
+    "settings_backup": true
   },
   "hide-files.files": [],
   "python.terminal.activateEnvironment": false,

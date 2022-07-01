@@ -9,7 +9,9 @@
 			".vscode",
 			".gitignore",
 			"notebook.ipynb",
-			"__pycache__"
+			"__pycache__",
+			"design.md",
+			"settings_backup"
 		]
 	}
 }

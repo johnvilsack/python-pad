@@ -1,7 +1,7 @@
-import string, itertools, random, json
-from lib import padConfig
+import itertools, random, json, os
+from lib import PassGrid_Config
 
-class WordList:
+class PassGrid:
   def __init__(self, config):
     self.config = config.config
 
@@ -9,33 +9,42 @@ class WordList:
     self.working_wordlist = {}
 
     self.generated_columns = {}
-    self.working_grid = {}
+    self.working_passgrid = {}
   
     # Set random seed by using the value found in settings
     random.seed(self.config['SETTINGS']['gridseed'])
 
   # Main generator of object
-  def generate_wordlist(self):
+  def create_passgrid(self):
+    complete = False
+
     # First, open the wordlist specified in config
-    self.open_wordlist_file()
+    file_opened = self.open_wordlist_file()
 
-    # Randomize this list based on gridseed
-    self.prepare_wordlist()
+    if file_opened is True:
+      # Randomize this list based on gridseed
+      list_ready = self.prepare_wordlist()
 
-    # Make columns
-    self.prepare_columns()
+      if list_ready is True:
+        # Make columns
+        columns_ready = self.prepare_columns()
 
-    # Create actual Grid
-    self.generate_passgrid()   
-    return
+        if columns_ready is True:
+          # Create actual Grid
+          complete = self.generate_passgrid()
+
+    if complete is True:
+      msg = "Grid generated successfully!"  
+    else:
+      msg = "Grid generation failed!"
+    return msg
 
   # Open wordlist dictated in settings
-  # TODO: Maybe change how this works so it loads like settings file
   def open_wordlist_file(self):
     with open(self.config['SETTINGS']['listsdir'] + self.config['SETTINGS']['wordfile'], 'r') as f:
       # Add to object
       self.IMPORTED_WORDLIST = json.load(f)
-    return
+    return True
 
   # Using a gridseed means that randomization is deterministic (i.e. can be replicated)
   def prepare_wordlist(self):
@@ -57,8 +66,7 @@ class WordList:
 
     # Populate object with new values matching total number of values needed
     self.working_wordlist = wordlist[0:TOTAL_CELLS]
-    return
-
+    return True
 
   # Make Excel-like columns
   def prepare_columns(self):
@@ -79,7 +87,7 @@ class WordList:
 
     # Populate object with only values needed
     self.generated_columns = result[0:NUMBER_OF_COLUMNS]
-    return
+    return True
 
   # Apply the order of the wordlist to the columns we created
   # Order is left to right, top to bottom (e.g. A1, B1, C1, A2, B2, C2, etc.)
@@ -88,87 +96,50 @@ class WordList:
     WORDLIST = self.working_wordlist
     COLUMNS = self.generated_columns
 
-    print(COLUMNS)
-    print(len(WORDLIST))
-
     this_column = 0
     this_row = 1
     result = {}
 
     i = 0
+    # Iterate over wordlist
+    for this_word in WORDLIST:
+      this_cell = COLUMNS[this_column] + str(this_row).zfill(2)
+      result[this_cell] = this_word
 
-    with open('test.txt', 'w') as f:
-      # Iterate over wordlist
-      for this_word in WORDLIST:
-        this_cell = COLUMNS[this_column] + str(this_row).zfill(2)
-        result[this_cell] = this_word
-        f.write('{0}: {1}\n'.format(this_cell, this_word))
-        #print("[{0} {1}] {2}::{3}".format(this_column, this_row, this_cell, this_word))
-        # Compare current column with total columns minus 1 since lists start at 0
-        if this_column // (len(COLUMNS)-1) == 0:
-          # Increment column
-          this_column += 1
-        else:
-          # Reset column
-          this_column = 0
-          # Increment row
-          this_row += 1
-        i += 1
-      f.close()
-    
-    print('{0} words {1} iterations {2} columns {3} rows'.format(len(WORDLIST), i, len(COLUMNS), this_row))
-    print('Expected {0} cells'.format(int(self.config['SETTINGS']['gridcols']) * int(self.config['SETTINGS']['gridrows'])))
-
-    self.working_grid = result
-    return
-
-  def makeFinal(self):
-    with open(self.config['SETTINGS']['gridjson'], 'w') as f:
-      json.dump(self.working_grid, f)
-    print('done!')
-
-  def makeHTML(self):
-    GRID = self.working_grid
-    GRIDCOLS = int(self.config['SETTINGS']['gridcols'])
-
-    printCell = 0
-    printRow = 0
-    printCol = 1
-
-    f = open('table.html', 'w')
-    f.write('<html>\n<head>\n')
-    f.write('\t<style>\n')
-    f.write('\t\thtml { font-family: monospace; }\n\t\ttable td { font-size: 9pt; border: 1px solid black; padding: 5px; }\n')
-    f.write('\t</style>\n')
-    f.write('</head>\n<body>\n')
-    f.write('<table>\n\t<tr>\n')
-
-    for cell in GRID:
-      cellValue = format(cell + ' :: ' + GRID[cell])
-      cellHTML = '\t\t<td>' + cellValue + '</td>\n'
-      f.write(cellHTML)
-
-      if printCol // GRIDCOLS == 0:
-        printCol += 1
+      # Compare current column with total columns minus 1 since lists start at 0
+      if this_column // (len(COLUMNS)-1) == 0:
+        # Increment column
+        this_column += 1
       else:
-        f.write('\t</tr>\n\t<tr>\n')
-        printCol = 1
-        printRow += 1
-      printCell += 1
-    f.write('\t</tr>\n</table>\n</body>\n</html>')
-    f.close()
-    print('Grid Written to HTML')
+        # Reset column
+        this_column = 0
+        # Increment row
+        this_row += 1
+      i += 1
+
+    self.working_passgrid = result
+
+    return True
+
+  def save_passgrid(self):
+
+    # Check if savesdir path exists, otherwise create it
+    if not os.path.exists(self.config['SETTINGS']['savesdir']):
+      os.makedirs(self.config['SETTINGS']['savesdir'])
+
+    # Save to file
+    with open(self.config['SETTINGS']['savesdir'] + self.config['SETTINGS']['gridjson'], 'w') as f:
+      json.dump(self.working_passgrid, f)
+    return True
 
 def main():
   # Generate config values
-  config = padConfig.Config()
+  config = PassGrid_Config.PassGrid_Config()
   config.init_config()
 
-  # Wordlist
-  wordlist = WordList(config)
-  wordlist.generate_wordlist()
-  wordlist.makeHTML()
-  wordlist.makeFinal()
+  # PassGrid
+  passgrid = PassGrid(config)
+  passgrid.create_passgrid()
 
 if __name__ == "__main__":
   try:
