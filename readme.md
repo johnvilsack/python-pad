@@ -4,7 +4,7 @@
 * Grid scales infinitely in row and column directions
 * Store decoding grid separate from encryption value
 * Values are easy to decode...even for grandma
-* Values are meaningless
+* Values are meaningless without context
 * Encryption strength as powerful as a one-time-pad
 * Using settings file you can recreate deterministic grid
 * Modular code separates file manipulation from security portions, allowing for easy porting to another language
