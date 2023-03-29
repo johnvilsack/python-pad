@@ -7,7 +7,6 @@
     "**/.DS_Store": true,
     "**/Thumbs.db": true,
     ".vscode": true,
-    ".gitignore": true,
     "notebook.ipynb": true,
     "__pycache__": true,
     "design.md": true,
