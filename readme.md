@@ -1,3 +1,6 @@
+# NOTICE
+Initial feature set not complete. Manually config settings.ini to generate grid.
+
 # Features
 * Automatically autofills lists to meet grid size requirements
   * Added benefit of similar words having multiple coordinates
