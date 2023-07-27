@@ -1,6 +1,9 @@
 # NOTICE
 Initial feature set not complete. Manually config settings.ini to generate grid.
 
+# Description
+Passpad creates a way for users to pick and store secure pass codes. It uses user-supplied lists of words to create a pseudorandom grid of coordinates that can be separated from the grid and stored elsewhere. Multi-factor passwords for sneakernet.
+
 # Features
 * Automatically autofills lists to meet grid size requirements
   * Added benefit of similar words having multiple coordinates
